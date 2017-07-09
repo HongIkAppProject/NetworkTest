@@ -25,6 +25,7 @@ namespace Prototype.NetworkLobby
         public LobbyTopPanel topPanel;
 
         public RectTransform mainMenuPanel;
+        public RectTransform serverListPanel;
         public RectTransform lobbyPanel;
 
         public LobbyInfoPanel infoPanel;
@@ -131,7 +132,7 @@ namespace Prototype.NetworkLobby
 
             currentPanel = newPanel;
 
-            if (currentPanel != mainMenuPanel)
+            if (currentPanel == lobbyPanel)
             {
                 backButton.gameObject.SetActive(true);
             }
