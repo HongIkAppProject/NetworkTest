@@ -21,6 +21,9 @@ namespace Prototype.NetworkLobby
         static Color OddServerColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
         static Color EvenServerColor = new Color(.94f, .94f, .94f, 1.0f);
 
+        // 2017-07 : LobbyMainMenu 에서 여기로 옮겨옴
+        public InputField matchNameInput;
+
         void OnEnable()
         {
             currentPage = 0;
@@ -32,6 +35,10 @@ namespace Prototype.NetworkLobby
             noServerFound.SetActive(false);
 
             RequestPage(0);
+
+            // 2017-07 : LobbyMainMenu 에서 여기로 옮겨옴
+            matchNameInput.onEndEdit.RemoveAllListeners();
+            matchNameInput.onEndEdit.AddListener(onEndEditGameName);
         }
 
 		public void OnGUIMatchList(bool success, string extendedInfo, List<MatchInfoSnapshot> matches)
@@ -79,5 +86,32 @@ namespace Prototype.NetworkLobby
             currentPage = page;
 			lobbyManager.matchMaker.ListMatches(page, 6, "", true, 0, 0, OnGUIMatchList);
 		}
+
+        // 2017-07 : LobbyMainMenu 에서 여기로 옮겨옴
+        public void OnClickCreateMatchmakingGame()
+        {
+            lobbyManager.StartMatchMaker();
+            lobbyManager.matchMaker.CreateMatch(
+                matchNameInput.text,
+                (uint)lobbyManager.maxPlayers,
+                true,
+                "", "", "", 0, 0,
+                lobbyManager.OnMatchCreate);
+
+            lobbyManager.backDelegate = lobbyManager.StopHost;
+            lobbyManager._isMatchmaking = true;
+            lobbyManager.DisplayIsConnecting();
+
+            lobbyManager.SetServerInfo("Matchmaker Host", lobbyManager.matchHost);
+        }
+
+        // 2017-07 : LobbyMainMenu 에서 여기로 옮겨옴
+        void onEndEditGameName(string text)
+        {
+            if (Input.GetKeyDown(KeyCode.Return))
+            {
+                OnClickCreateMatchmakingGame();
+            }
+        }
     }
 }
